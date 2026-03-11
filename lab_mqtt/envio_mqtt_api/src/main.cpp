@@ -11,11 +11,11 @@
 // ===========================================================================
 // CONFIGURACION
 // ===========================================================================
-const char* WIFI_SSID     = "Redmi Note 10 Pro";
-const char* WIFI_PASSWORD = "perrito123";
+const char* WIFI_SSID     = "";
+const char* WIFI_PASSWORD = "";
 
 // RabbitMQ via plugin MQTT (puerto 1883)
-const char* MQTT_SERVER   = "10.46.80.245";
+const char* MQTT_SERVER   = "";
 const int   MQTT_PORT     = 1883;
 const char* MQTT_USER     = "iot_device";
 const char* MQTT_PASSWORD = "SecurePass123!";
