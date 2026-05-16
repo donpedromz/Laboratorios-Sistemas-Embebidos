@@ -1,0 +1,17 @@
+{
+  "name": "nodered-iot-local",
+  "version": "1.0.0",
+  "description": "Entorno local Node-RED para laboratorio IoT",
+  "private": true,
+  "scripts": {
+    "start": "node-red -u . -s settings.js",
+    "start:verbose": "node-red -u . -s settings.js -v"
+  },
+  "dependencies": {
+    "node-red": "^4.0.9"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.0.0"
+}

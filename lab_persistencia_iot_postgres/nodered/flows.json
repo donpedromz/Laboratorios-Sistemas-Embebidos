@@ -1,0 +1,282 @@
+[
+    {
+        "id": "2c6d61a3908a29db",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6767b5ec8e5f012b",
+        "type": "mqtt-broker",
+        "name": "Mqtt Broker",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ec6511593620b224",
+        "type": "postgreSQLConfig",
+        "name": "instance",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5433",
+        "portFieldType": "num",
+        "database": "iot_db",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": 10,
+        "maxFieldType": "num",
+        "idle": 1000,
+        "idleFieldType": "num",
+        "connectionTimeout": 10000,
+        "connectionTimeoutFieldType": "num",
+        "user": "iot_user",
+        "userFieldType": "str",
+        "password": "iot_password",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "b93c8fa7947eb163",
+        "type": "mqtt in",
+        "z": "2c6d61a3908a29db",
+        "name": "",
+        "topic": "sensores/bulk",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "6767b5ec8e5f012b",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 480,
+        "wires": [
+            [
+                "dbccb448fdc33a91"
+            ]
+        ]
+    },
+    {
+        "id": "dbccb448fdc33a91",
+        "type": "json",
+        "z": "2c6d61a3908a29db",
+        "name": "formatter",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 340,
+        "y": 480,
+        "wires": [
+            [
+                "0bfa169c615c6323"
+            ]
+        ]
+    },
+    {
+        "id": "0bfa169c615c6323",
+        "type": "function",
+        "z": "2c6d61a3908a29db",
+        "name": "function 1",
+        "func": "const bulk = msg.payload;\nmsg.params = [];\nlet placeholders = [];\n\nfor (let r of bulk) {\n    let base = msg.params.length;\n    msg.params.push(r.temperatura, r.humedad, r.ir_proximidad, r.potenciometro, r.device_id);\n    placeholders.push(`($${base+1}, $${base+2}, $${base+3}, $${base+4}, $${base+5})`);\n}\n\nmsg.query = `INSERT INTO lecturas_sensores (temperatura, humedad, proximidad_ir, potenciometro, device_id) VALUES ${placeholders.join(\", \")}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 480,
+        "wires": [
+            [
+                "27a826061d0a4d44"
+            ]
+        ]
+    },
+    {
+        "id": "27a826061d0a4d44",
+        "type": "postgresql",
+        "z": "2c6d61a3908a29db",
+        "name": "Sensor Logs Instance",
+        "query": "",
+        "postgreSQLConfig": "ec6511593620b224",
+        "split": true,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 740,
+        "y": 480,
+        "wires": [
+            [
+                "1f1045af9fdb9f81"
+            ]
+        ]
+    },
+    {
+        "id": "cceb4a9ff806d293",
+        "type": "catch",
+        "z": "2c6d61a3908a29db",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 520,
+        "y": 540,
+        "wires": [
+            [
+                "3e1a2337b1271a2b"
+            ]
+        ]
+    },
+    {
+        "id": "3e1a2337b1271a2b",
+        "type": "debug",
+        "z": "2c6d61a3908a29db",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 730,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "98e8ce42a04c4452",
+        "type": "mqtt in",
+        "z": "2c6d61a3908a29db",
+        "name": "",
+        "topic": "logs/mensajes_sistema",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "6767b5ec8e5f012b",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 280,
+        "wires": [
+            [
+                "1338a695f98f47f4"
+            ]
+        ]
+    },
+    {
+        "id": "1338a695f98f47f4",
+        "type": "json",
+        "z": "2c6d61a3908a29db",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 370,
+        "y": 280,
+        "wires": [
+            [
+                "5f7adf3cee19e6d2"
+            ]
+        ]
+    },
+    {
+        "id": "5f7adf3cee19e6d2",
+        "type": "function",
+        "z": "2c6d61a3908a29db",
+        "name": "function 2",
+        "func": "const msgs = msg.payload;\n\nif (!msgs || msgs.length === 0) {\n    node.warn(\"Payload vacío\");\n    return null;\n}\n\nlet placeholders = [];\nlet params = [];\n\nmsgs.forEach((m, index) => {\n    const base = index * 3;\n\n    placeholders.push(\n        `($${base + 1}, $${base + 2}, to_timestamp($${base + 3}))`\n    );\n\n    params.push(\n        m.device_id ?? null,\n        m.msg ?? null,\n        m.timestamp ?? null  \n    );\n});\n\nmsg.query = `\n    INSERT INTO logs_comandos (device_id, comando_texto, fecha)\n    VALUES ${placeholders.join(\", \")}\n`;\n\nmsg.params = params;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 280,
+        "wires": [
+            [
+                "ee9e4163b4c11b3b"
+            ]
+        ]
+    },
+    {
+        "id": "ee9e4163b4c11b3b",
+        "type": "postgresql",
+        "z": "2c6d61a3908a29db",
+        "name": "Sensor Logs Instance",
+        "query": "",
+        "postgreSQLConfig": "ec6511593620b224",
+        "split": false,
+        "rowsPerMsg": "1",
+        "outputs": 1,
+        "x": 740,
+        "y": 280,
+        "wires": [
+            [
+                "fd789e52131a1242"
+            ]
+        ]
+    },
+    {
+        "id": "1f1045af9fdb9f81",
+        "type": "debug",
+        "z": "2c6d61a3908a29db",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 990,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "fd789e52131a1242",
+        "type": "debug",
+        "z": "2c6d61a3908a29db",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 280,
+        "wires": []
+    }
+]

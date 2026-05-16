@@ -1,0 +1,21 @@
+{
+  "name": "lab-persistencia-iot-postgres",
+  "version": "1.0.0",
+  "description": "Laboratorio IoT con ESP32, RabbitMQ, Node-RED y PostgreSQL",
+  "private": true,
+  "scripts": {
+    "nodered": "node-red -u ./nodered -s ./nodered/settings.js",
+    "nodered:verbose": "node-red -u ./nodered -s ./nodered/settings.js -v",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres"
+  },
+  "dependencies": {
+    "node-red": "^4.1.10",
+    "node-red-contrib-postgresql": "^0.15.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.0.0"
+}

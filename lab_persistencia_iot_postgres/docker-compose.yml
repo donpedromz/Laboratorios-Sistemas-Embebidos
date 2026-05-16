@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: iot_postgres
+    environment:
+      POSTGRES_DB: iot_db
+      POSTGRES_USER: iot_user
+      POSTGRES_PASSWORD: iot_password
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - iot_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iot_user -d iot_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  iot_network:
+    driver: bridge
